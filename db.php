@@ -1,7 +1,7 @@
 <?php
 $host = "localhost";
 $user = "root"; // Predvolené v XAMPP
-$pass = "";     // Predvolené v XAMPP
+$pass = "root";     // Predvolené v XAMPP
 $db   = "katalog_hier";
 
 // Vytvorenie pripojenia
