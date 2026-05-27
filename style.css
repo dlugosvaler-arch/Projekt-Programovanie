@@ -1,4 +1,6 @@
-/* Globálne nastavenia pre herný tmavý režim */
+/* =========================================
+   GLOBÁLNE NASTAVENIA (DARK THEME)
+   ========================================= */
 body {
     background-color: #0b0b0c;
     color: #ffffff;
@@ -7,28 +9,69 @@ body {
     padding: 30px;
 }
 
-h1, h2 {
+h1 {
     color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 2px;
-    border-left: 5px solid #ff003c; /* Herná červená */
+    border-left: 5px solid #ff003c;
     padding-left: 15px;
-    margin-bottom: 30px;
+    margin: 0; /* Zrušený spodný margin, rieši to flexbox hlavičky */
 }
 
-/* Štýl pre hlavné tlačidlo PLUS (Pridať hru) */
+/* =========================================
+   HLAVIČKA A PREPÍNANIE PROFILOV
+   ========================================= */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background-color: #141416;
+    padding: 15px 20px;
+    border-radius: 6px;
+    border: 1px solid #232326;
+}
+
+.profile-switcher {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-link {
+    color: #8a8a93;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding-bottom: 3px;
+    transition: color 0.3s;
+}
+
+.profile-link:hover {
+    color: #ffffff;
+}
+
+.profile-link.active {
+    color: #ff003c;
+    border-bottom: 2px solid #ff003c;
+}
+
+/* =========================================
+   TLAČIDLO "PRIDAŤ NOVÚ HRU"
+   ========================================= */
 .btn-add {
     display: inline-block;
     background-color: #ff003c;
     color: #ffffff;
     text-decoration: none;
-    padding: 12px 25px;
+    padding: 14px 28px;
     font-weight: bold;
+    font-size: 15px;
     border-radius: 4px;
     text-transform: uppercase;
     transition: all 0.3s ease;
     box-shadow: 0 0 15px rgba(255, 0, 60, 0.4);
-    margin-bottom: 30px;
+    margin-bottom: 20px; /* Medzera medzi tlačidlom a vyhľadávačom */
 }
 
 .btn-add:hover {
@@ -37,37 +80,102 @@ h1, h2 {
     transform: translateY(-2px);
 }
 
-/* Mriežka pre boxy s platformami (Dashboard z Illustratoru) */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-    margin-top: 20px;
+/* =========================================
+   VYHĽADÁVACÍ PANEL (TERAZ V JEDNOM RIADKU)
+   ========================================= */
+.search-container {
+    display: flex;
+    gap: 10px;
+    max-width: 800px;
+    margin-bottom: 40px;
 }
 
-/* Samostatný box (Karta) pre platformu */
+.search-input {
+    flex-grow: 1;
+    background-color: #141416;
+    border: 1px solid #232326;
+    color: #ffffff;
+    padding: 14px 20px;
+    border-radius: 4px;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #ff003c;
+    outline: none;
+}
+
+.btn-search {
+    background-color: #ff003c;
+    color: #ffffff;
+    border: none;
+    padding: 0 25px;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-search:hover {
+    background-color: #cc002f;
+}
+
+.btn-cancel {
+    background-color: #1f1f22;
+    color: #8a8a93;
+    border: 1px solid #232326;
+    padding: 12px 20px;
+    font-weight: bold;
+    font-size: 14px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #28282c;
+    color: #ffffff;
+    border-color: #ff003c;
+}
+
+/* =========================================
+   DASHBOARD PLATFORIEM (MRIEŽKA)
+   ========================================= */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+}
+
 .platform-card {
     background-color: #141416;
     border: 1px solid #232326;
     border-radius: 6px;
-    padding: 20px;
+    padding: 25px;
     transition: border-color 0.3s ease;
 }
 
 .platform-card:hover {
-    border-color: #ff003c; /* Karta sa pri hoveri rozsvieti na červeno */
+    border-color: #ff003c;
 }
 
 .platform-card h3 {
     margin-top: 0;
     color: #ff003c;
     border-bottom: 2px solid #232326;
-    padding-bottom: 10px;
+    padding-bottom: 12px;
     text-transform: uppercase;
     font-size: 18px;
+    margin-bottom: 15px;
 }
 
-/* Zoznam hier vnútri karty */
 .game-list {
     list-style: none;
     padding: 0;
@@ -78,7 +186,7 @@ h1, h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 12px 0;
     border-bottom: 1px solid #1f1f22;
 }
 
@@ -87,78 +195,42 @@ h1, h2 {
 }
 
 .game-info {
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .game-meta {
-    font-size: 12px;
+    font-size: 13px;
     color: #8a8a93;
     display: block;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
-/* Tlačidlo na vymazanie hry (X) */
 .btn-delete {
     color: #8a8a93;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.2s ease;
     padding: 5px;
+    transition: color 0.2s ease;
 }
 
 .btn-delete:hover {
     color: #ff003c;
 }
 
-/* Štylovanie formulára v pridaj.php */
+/* =========================================
+   FORMULÁR PRE PRIDAJ.PHP (aby ladil)
+   ========================================= */
 .form-container {
     max-width: 500px;
     background-color: #141416;
     border: 1px solid #232326;
     padding: 30px;
     border-radius: 6px;
+    margin-top: 20px;
 }
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #8a8a93;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 12px;
-}
-
-.form-control {
-    width: 100%;
-    padding: 12px;
-    background-color: #1f1f22;
-    border: 1px solid #232326;
-    color: #ffffff;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-.form-control:focus {
-    border-color: #ff003c;
-    outline: none;
-}
-
-.btn-submit {
-    background-color: #ff003c;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    text-transform: uppercase;
-    width: 100%;
-}
-
-.btn-submit:hover {
-    background-color: #cc002f;
-}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; color: #8a8a93; font-weight: bold; text-transform: uppercase; font-size: 12px; }
+.form-control { width: 100%; padding: 12px; background-color: #1f1f22; border: 1px solid #232326; color: #ffffff; border-radius: 4px; box-sizing: border-box; }
+.form-control:focus { border-color: #ff003c; outline: none; }
+.btn-submit { background-color: #ff003c; color: white; border: none; padding: 14px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 15px;}
+.btn-submit:hover { background-color: #cc002f; }

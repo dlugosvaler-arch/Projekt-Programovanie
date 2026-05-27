@@ -1,12 +1,30 @@
 <?php
+session_start();
 require_once 'db.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// 1. Zabezpečenie správneho ID používateľa
+if (isset($_SESSION['user_id'])) {
+    $pouzivatel_id = $_SESSION['user_id'];
+} else {
+    // Ak session zlyhá, vytiahneme prvého existujúceho používateľa priamo z databázy
+    $result = $conn->query("SELECT id FROM pouzivatelia LIMIT 1");
+    if ($row = $result->fetch_assoc()) {
+        $pouzivatel_id = $row['id'];
+        $_SESSION['user_id'] = $pouzivatel_id; // Uložíme si ho hneď aj do pamäte
+    } else {
+        die("Kritická chyba: V databáze neexistujú žiadni používatelia. Najskôr nejakého vytvor!");
+    }
+}
+
+// 2. Spracovanie odoslaného formulára (tvoj pôvodný kód)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Nezabudni, že nižšie v tvojom kóde pri INSERT INTO už nesmieš znovu definovať $pouzivatel_id!
+    // Použije sa táto premenná $pouzivatel_id zhora.
     $nazov = $conn->real_escape_string($_POST['nazov']);
     $zaner = $conn->real_escape_string($_POST['zaner']);
     $rok = intval($_POST['rok_vydania']);
     $platforma_id = intval($_POST['platforma_id']);
-    $pouzivatel_id = 1; 
+   
 
     if (!empty($nazov) && !empty($platforma_id)) {
         $sql = "INSERT INTO hry (nazov, zaner, rok_vydania, platforma_id, pouzivatel_id) 
@@ -48,6 +66,7 @@ $platformy_vysledok = $conn->query("SELECT * FROM platformy ORDER BY kategoria D
                 <select name="zaner" class="form-control">
                     <option value="">-- Vyberte žáner --</option>
                     <option value="Akčná">Akčná</option>
+                    <option value="FPS">FPS</option>
                     <option value="Adventúra">Adventúra</option>
                     <option value="RPG">RPG</option>
                     <option value="Športová">Športová</option>

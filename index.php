@@ -1,16 +1,43 @@
 <?php
+session_start();
 require_once 'db.php';
 
-// Načítame všetky platformy a k nim pripojené hry (LEFT JOIN zabezpečí, že uvidíme aj prázdne platformy ako v Illustratori)
+// 1. Spracovanie prepínania používateľov
+if (isset($_GET['prepni_pouzivatela'])) {
+    $_SESSION['user_id'] = intval($_GET['prepni_pouzivatela']);
+}
+
+// Predvolený používateľ (ak nie je vybratý, daj ID 1)
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['user_id'] = 1;
+}
+
+$aktualny_pouzivatel_id = $_SESSION['user_id'];
+
+// Načítanie používateľov
+$pouzivatel_query = $conn->query("SELECT meno FROM pouzivatelia WHERE id = $aktualny_pouzivatel_id");
+$aktualny_pouzivatel = $pouzivatel_query->fetch_assoc();
+$vsetci_pouzivatelia = $conn->query("SELECT * FROM pouzivatelia");
+
+// 2. Spracovanie vyhľadávania
+$search_query = "";
+$search_value = "";
+
+if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
+    $search_value = $conn->real_escape_string($_GET['search']);
+    $search_query = " AND (hry.nazov LIKE '%$search_value%' OR hry.zaner LIKE '%$search_value%')";
+}
+
+// 3. Dotaz na databázu
 $sql = "SELECT platformy.id AS platform_id, platformy.nazov AS platforma_nazov, platformy.kategoria,
                hry.id AS hra_id, hry.nazov AS hra_nazov, hry.zaner, hry.rok_vydania 
         FROM platformy 
-        LEFT JOIN hry ON platformy.id = hry.platforma_id 
+        LEFT JOIN hry ON platformy.id = hry.platforma_id AND hry.pouzivatel_id = $aktualny_pouzivatel_id $search_query
         ORDER BY platformy.kategoria DESC, platformy.nazov ASC";
 
 $vysledok = $conn->query($sql);
 
-// Preusporiadanie dát v PHP do logických skupín podľa platforiem
+// 4. Spracovanie dát pre výpis
 $platformy = [];
 if ($vysledok && $vysledok->num_rows > 0) {
     while($row = $vysledok->fetch_assoc()) {
@@ -22,7 +49,6 @@ if ($vysledok && $vysledok->num_rows > 0) {
                 'hry' => []
             ];
         }
-        // Ak k platforme existuje hra, pridáme ju do zoznamu
         if ($row['hra_id'] !== null) {
             $platformy[$p_id]['hry'][] = [
                 'id' => $row['hra_id'],
@@ -44,9 +70,33 @@ if ($vysledok && $vysledok->num_rows > 0) {
 </head>
 <body>
 
-    <h1>Užívateľov katalóg hier</h1>
+    <div class="header-container">
+        <h1>Knižnica hráča: <span style="color: #ff003c;"><?php echo htmlspecialchars($aktualny_pouzivatel['meno']); ?></span></h1>
+        
+        <div class="profile-switcher">
+            <span style="color: #8a8a93; font-size: 14px; text-transform: uppercase;">🎮 Hráč:</span>
+            <?php while($p = $vsetci_pouzivatelia->fetch_assoc()): ?>
+                <a href="index.php?prepni_pouzivatela=<?php echo $p['id']; ?>" 
+                   class="profile-link <?php echo ($p['id'] == $aktualny_pouzivatel_id) ? 'active' : ''; ?>">
+                    <?php echo htmlspecialchars($p['meno']); ?>
+                </a>
+            <?php endwhile; ?>
+        </div>
+    </div>
     
     <a href="pridaj.php" class="btn-add">➕ Pridať novú hru</a>
+
+    <form method="GET" action="index.php" class="search-container">
+        <input type="text" name="search" class="search-input" 
+               placeholder="Vyhľadaj hru podľa názvu alebo žánru..." 
+               value="<?php echo htmlspecialchars($search_value); ?>">
+        
+        <button type="submit" class="btn-search">Hľadať</button>
+        
+        <?php if (!empty($search_value)): ?>
+            <a href="index.php" class="btn-cancel">Zrušiť</a>
+        <?php endif; ?>
+    </form>
 
     <div class="dashboard-grid">
         <?php foreach ($platformy as $id => $data): ?>
