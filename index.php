@@ -2,24 +2,20 @@
 session_start();
 require_once 'db.php';
 
-// 1. Spracovanie prepínania používateľov
 if (isset($_GET['prepni_pouzivatela'])) {
     $_SESSION['user_id'] = intval($_GET['prepni_pouzivatela']);
 }
 
-// Predvolený používateľ (ak nie je vybratý, daj ID 1)
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = 1;
 }
 
 $aktualny_pouzivatel_id = $_SESSION['user_id'];
 
-// Načítanie používateľov
 $pouzivatel_query = $conn->query("SELECT meno FROM pouzivatelia WHERE id = $aktualny_pouzivatel_id");
 $aktualny_pouzivatel = $pouzivatel_query->fetch_assoc();
 $vsetci_pouzivatelia = $conn->query("SELECT * FROM pouzivatelia");
 
-// 2. Spracovanie vyhľadávania
 $search_query = "";
 $search_value = "";
 
@@ -28,7 +24,6 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
     $search_query = " AND (hry.nazov LIKE '%$search_value%' OR hry.zaner LIKE '%$search_value%')";
 }
 
-// 3. Dotaz na databázu
 $sql = "SELECT platformy.id AS platform_id, platformy.nazov AS platforma_nazov, platformy.kategoria,
                hry.id AS hra_id, hry.nazov AS hra_nazov, hry.zaner, hry.rok_vydania 
         FROM platformy 
@@ -37,7 +32,6 @@ $sql = "SELECT platformy.id AS platform_id, platformy.nazov AS platforma_nazov, 
 
 $vysledok = $conn->query($sql);
 
-// 4. Spracovanie dát pre výpis
 $platformy = [];
 if ($vysledok && $vysledok->num_rows > 0) {
     while($row = $vysledok->fetch_assoc()) {

@@ -2,24 +2,19 @@
 session_start();
 require_once 'db.php';
 
-// 1. Zabezpečenie správneho ID používateľa
 if (isset($_SESSION['user_id'])) {
     $pouzivatel_id = $_SESSION['user_id'];
 } else {
-    // Ak session zlyhá, vytiahneme prvého existujúceho používateľa priamo z databázy
     $result = $conn->query("SELECT id FROM pouzivatelia LIMIT 1");
     if ($row = $result->fetch_assoc()) {
         $pouzivatel_id = $row['id'];
-        $_SESSION['user_id'] = $pouzivatel_id; // Uložíme si ho hneď aj do pamäte
+        $_SESSION['user_id'] = $pouzivatel_id;
     } else {
         die("Kritická chyba: V databáze neexistujú žiadni používatelia. Najskôr nejakého vytvor!");
     }
 }
 
-// 2. Spracovanie odoslaného formulára (tvoj pôvodný kód)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Nezabudni, že nižšie v tvojom kóde pri INSERT INTO už nesmieš znovu definovať $pouzivatel_id!
-    // Použije sa táto premenná $pouzivatel_id zhora.
     $nazov = $conn->real_escape_string($_POST['nazov']);
     $zaner = $conn->real_escape_string($_POST['zaner']);
     $rok = intval($_POST['rok_vydania']);
